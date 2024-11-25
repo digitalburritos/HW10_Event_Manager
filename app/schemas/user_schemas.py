@@ -22,6 +22,22 @@ def validate_url(url: Optional[str]) -> Optional[str]:
         raise ValueError('Invalid URL format')
     return url
 
+def linkedin_validate_url(url: Optional[str]) -> Optional[str]:
+    if url is None:
+        return url
+    linkedin_url_regex = r'^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-_]+\/?$'
+    if not re.match(linkedin_url_regex, url):
+        raise ValueError('Invalid LinkedIn profile URL. It should match: https://linkedin.com/in/<username>.')
+    return url
+
+def github_validate_url(url: Optional[str]) -> Optional[str]:
+    if url is None:
+        return url
+    github_url_regex = r'^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9-_]+\/?$'
+    if not re.match(github_url_regex, url):
+        raise ValueError('Invalid GitHub profile URL. It should match: https://github.com/<username>.')
+    return url
+
 class UserBase(BaseModel):
     email: EmailStr = Field(..., example="john.doe@example.com")
     nickname: Optional[str] = Field(None, min_length=3, pattern=r'^[\w-]+$', example="john_doe_123")
@@ -33,7 +49,9 @@ class UserBase(BaseModel):
     github_profile_url: Optional[str] = Field(None, example="https://github.com/johndoe")
 
     _validate_urls = validator('profile_picture_url', 'linkedin_profile_url', 'github_profile_url', pre=True, allow_reuse=True)(validate_url)
- 
+    _validate_linkedin_url = validator('linkedin_profile_url', pre=True, allow_reuse=True)(linkedin_validate_url)
+    _validate_github_url = validator('github_profile_url', pre=True, allow_reuse=True)(github_validate_url)
+    
     class Config:
         from_attributes = True
 
@@ -70,6 +88,13 @@ class UserResponse(UserBase):
     email: EmailStr = Field(..., example="john.doe@example.com")
     nickname: Optional[str] = Field(None, min_length=3, pattern=r'^[\w-]+$', example="john_doe_123")
     is_professional: Optional[bool] = Field(default=False, example=True)
+
+    # This ensures any missing URLs are handled correctly
+    @root_validator(pre=True)
+    def set_default_urls(cls, values):
+        values['linkedin_profile_url'] = values.get('linkedin_profile_url', '') or ''
+        values['github_profile_url'] = values.get('github_profile_url', '') or ''
+        return values
 
 class LoginRequest(BaseModel):
     email: str = Field(..., example="john.doe@example.com")
