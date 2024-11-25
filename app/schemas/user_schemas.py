@@ -61,7 +61,7 @@ class UserCreate(UserBase):
     
     @root_validator(pre=True)
     def set_nickname(cls, values):
-        nickname = values.get('nickname') # Assign provided nickname
+        nickname = values['nickname'] # Assign provided nickname
         if not nickname:
             values['nickname'] = generate_nickname()  # Generate a nickname if not provided
         return values
@@ -89,11 +89,13 @@ class UserResponse(UserBase):
     nickname: Optional[str] = Field(None, min_length=3, pattern=r'^[\w-]+$', example="john_doe_123")
     is_professional: Optional[bool] = Field(default=False, example=True)
 
-    # This ensures any missing URLs are handled correctly
-    @root_validator(pre=True)
     def set_default_urls(cls, values):
-        values['linkedin_profile_url'] = values.get('linkedin_profile_url', '') or ''
-        values['github_profile_url'] = values.get('github_profile_url', '') or ''
+    # Access attributes directly instead of using .get() fixing 500 Error when GET all Users
+        if 'linkedin_profile_url' not in values:
+            values['linkedin_profile_url'] = ''
+        if 'github_profile_url' not in values:
+            values['github_profile_url'] = ''
+        
         return values
 
 class LoginRequest(BaseModel):
