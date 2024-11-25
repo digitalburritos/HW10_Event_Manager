@@ -6,7 +6,7 @@
   
 ### [user_schemas.py](https://github.com/digitalburritos/hw10_event_manager/blob/2-null-urls/app/schemas/user_schemas.py#L24-L54)
 - Added custom validation functions for LinkedIn and GitHub profile URLs:
-  - The validation for LinkedIn is done through the linkedin_validate_url function, ensuring the URL equals this format =https://linkedin.com/in/<username>'.
-  - The validation for GitHub is done through the github_validate_url function, ensuring the URL equals this format =https://github.com/<username>'.
+  - The validation for LinkedIn is done through the linkedin_validate_url function, ensuring the URL equals the secure hypertext transfer protocol format: linkedin.com/in/username
+  - The validation for GitHub is done through the github_validate_url function, ensuring the URL equals the secure hypertext transfer protocol format: github.com/username
 
 ![alt text](image-1.png)
