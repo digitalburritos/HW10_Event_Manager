@@ -31,6 +31,7 @@ from app.schemas.user_schemas import LoginRequest, UserBase, UserCreate, UserLis
 from app.services.user_service import UserService
 from app.services.jwt_service import create_access_token
 from app.utils.link_generation import create_user_links, generate_pagination_links
+from app.utils.nickname_gen import generate_nickname
 from app.dependencies import get_settings
 from app.services.email_service import EmailService
 router = APIRouter()
@@ -121,7 +122,6 @@ async def delete_user(user_id: UUID, db: AsyncSession = Depends(get_db), token: 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-
 @router.post("/users/", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["User Management Requires (Admin or Manager Roles)"], name="create_user")
 async def create_user(user: UserCreate, request: Request, db: AsyncSession = Depends(get_db), email_service: EmailService = Depends(get_email_service), token: str = Depends(oauth2_scheme), current_user: dict = Depends(require_role(["ADMIN", "MANAGER"]))):
     """
@@ -139,22 +139,29 @@ async def create_user(user: UserCreate, request: Request, db: AsyncSession = Dep
     Returns:
     - UserResponse: The newly created user's information along with navigation links.
     """
+    # Check if the user already exists by email
     existing_user = await UserService.get_by_email(db, user.email)
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
     
+    # If the nickname is not provided, generate one
+    if not user.nickname:
+        user.nickname = generate_nickname()  # Generate nickname only if not provided
+
+    # Proceed to create the user
     created_user = await UserService.create(db, user.model_dump(), email_service)
+
     if not created_user:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to create user")
     
-    
+    # Return the created user response with relevant details
     return UserResponse.model_construct(
         id=created_user.id,
         bio=created_user.bio,
         first_name=created_user.first_name,
         last_name=created_user.last_name,
         profile_picture_url=created_user.profile_picture_url,
-        nickname=created_user.nickname,
+        nickname=created_user.nickname,  # Ensure nickname is returned as is
         email=created_user.email,
         last_login_at=created_user.last_login_at,
         created_at=created_user.created_at,
