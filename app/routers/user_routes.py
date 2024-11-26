@@ -34,6 +34,7 @@ from app.utils.link_generation import create_user_links, generate_pagination_lin
 from app.utils.nickname_gen import generate_nickname
 from app.dependencies import get_settings
 from app.services.email_service import EmailService
+from app.utils.pass_val import validate_password
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 settings = get_settings()
@@ -148,6 +149,10 @@ async def create_user(user: UserCreate, request: Request, db: AsyncSession = Dep
     if not user.nickname:
         user.nickname = generate_nickname()  # Generate nickname only if not provided
 
+    # Validate password
+    if not validate_password(user.password):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password does not meet complexity requirements")
+    
     # Proceed to create the user
     created_user = await UserService.create(db, user.model_dump(), email_service)
 
