@@ -59,6 +59,13 @@ class UserService:
                 return None
             validated_data['hashed_password'] = hash_password(validated_data.pop('password'))
             new_user = User(**validated_data)
+
+            # Set URLs for LinkedIn and GitHub if present in the input
+            if 'linkedin_profile_url' in user_data:
+                new_user.linkedin_profile_url = user_data['linkedin_profile_url']
+            if 'github_profile_url' in user_data:
+                new_user.github_profile_url = user_data['github_profile_url']
+                
             new_user.verification_token = generate_verification_token()
             
             # Define a custom exception for when a nickname is already taken
