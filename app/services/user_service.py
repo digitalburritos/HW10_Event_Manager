@@ -60,10 +60,31 @@ class UserService:
             validated_data['hashed_password'] = hash_password(validated_data.pop('password'))
             new_user = User(**validated_data)
             new_user.verification_token = generate_verification_token()
-            new_nickname = generate_nickname()
-            while await cls.get_by_nickname(session, new_nickname):
+            
+            # Define a custom exception for when a nickname is already taken
+            class NicknameAlreadyTakenError(Exception):
+                def __init__(self, nickname: str):
+                    self.nickname = nickname
+                    self.message = f"The nickname '{nickname}' is already taken. Please choose another one."
+                    super().__init__(self.message)
+
+            # Check if the user has provided a nickname
+            user_nickname = validated_data.get('nickname', None)
+
+            # If nickname is provided, check its uniqueness
+            if user_nickname:
+                existing_nickname = await cls.get_by_nickname(session, user_nickname)
+                if existing_nickname:
+                    # Raise a custom error if the nickname is already taken
+                    raise NicknameAlreadyTakenError(user_nickname)
+                new_user.nickname = user_nickname
+            else:
+                # If no nickname is provided, generate a new one
                 new_nickname = generate_nickname()
-            new_user.nickname = new_nickname
+                while await cls.get_by_nickname(session, new_nickname):
+                    new_nickname = generate_nickname()
+                new_user.nickname = new_nickname
+
             session.add(new_user)
             await session.commit()
             await email_service.send_verification_email(new_user)
