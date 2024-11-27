@@ -45,6 +45,11 @@ engine = create_async_engine(TEST_DATABASE_URL, echo=settings.debug)
 AsyncTestingSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 AsyncSessionScoped = scoped_session(AsyncTestingSessionLocal)
 
+@pytest.fixture
+async def user_token(async_client, verified_user):
+    # Logic to create a token for the verified user
+    token = await create_access_token(data = verified_user)
+    return token
 
 @pytest.fixture
 def email_service():
