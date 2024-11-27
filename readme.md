@@ -68,4 +68,4 @@ Password: `password`
 3. While the container is running, apply database migrations in a split terminal using this command:  
 `docker compose exec fastapi alembic upgrade head`
 
-- Now you will be able to Authorize your login to connect to your DB use the methods in the openapi http://localhost/docs
+- Now you will be able to Authorize your login to connect your DB with your openapi http://localhost/docs
