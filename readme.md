@@ -24,14 +24,14 @@ For easy access to the work completed during this project, you can view the clos
 2. Clone fork locally to your machine using   
 `git clone git@github.com:your_user/your_repo.git`
 
-3. Configure `production.yml` for your dockerhub then create a `.env` file with this structure to add your mailtrap.io account inbox. Be sure to populate the username and password:    
+3. Configure `production.yml` for your dockerhub then create a `.env` file with this structure to add your http://mailtrap.io account inbox. Be sure to populate the username and password:    
 `smtp_server=sandbox.smtp.mailtrap.io`  
 `smtp_port=2525`  
 `smtp_username=`  
 `smtp_password=`
 
-4. Start and build a multi-container application:  
-`docker compose up --build`  
+4. Start and build a multi-container application with this command:  
+`docker compose up --build`
 
 5. Goto http://localhost/docs to view openapi spec documentation
 - Click `Authorize`   
@@ -54,17 +54,18 @@ Password: `password`
 7. Test API and cross reference DB
 ***
 ### Pytest Note (PLEASE READ THIS SECTION FULLY BEFORE TESTING)
-- When running pytests inside the containers you can use this to run all tests:  
+- When running pytests inside the containers you can use this command to run all tests:  
 `docker compose exec fastapi pytest`
-- You can also run a single test file as so:  
+- You can also run a single test file with this command:  
 `docker compose exec fastapi pytest tests/test_pass_val.py`
 
 ###  Keep in mind that the user data in the DB will be dropped. To ensure you can use the application again without running into Internal Error on openapi, do this:
+1. Go to http://localhost:5050 and delete the `alembic_version` table
 
-1. Run the container  
+2. Run the container  
 `docker compose up --build`
 
-2. While container is running, apply database migrations in a split terminal:  
+3. While the container is running, apply database migrations in a split terminal using this command:  
 `docker compose exec fastapi alembic upgrade head`
 
-- You will be able to Authorize your login and use the methods in the openapi
+- Now you will be able to Authorize your login to connect to your DB use the methods in the openapi http://localhost/docs

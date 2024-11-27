@@ -222,6 +222,7 @@ def user_base_data():
     return {
         "username": "john_doe_123",
         "email": "john.doe@example.com",
+        "nickname": "cool_panda_42",
         "full_name": "John Doe",
         "bio": "I am a software engineer with over 5 years of experience.",
         "profile_picture_url": "https://example.com/profile_pictures/john_doe.jpg"
@@ -231,6 +232,7 @@ def user_base_data():
 def user_base_data_invalid():
     return {
         "username": "john_doe_123",
+        "nickname": "cool_panda_42",
         "email": "john.doe.example.com",
         "full_name": "John Doe",
         "bio": "I am a software engineer with over 5 years of experience.",
@@ -246,6 +248,9 @@ def user_create_data(user_base_data):
 def user_update_data():
     return {
         "email": "john.doe.new@example.com",
+        "first_name": "John",
+        "last_name": "Doe",
+        "nickname": "cool_panda_42",
         "full_name": "John H. Doe",
         "bio": "I specialize in backend development with Python and Node.js.",
         "profile_picture_url": "https://example.com/profile_pictures/john_doe_updated.jpg"
@@ -256,6 +261,7 @@ def user_response_data():
     return {
         "id": "unique-id-string",
         "username": "testuser",
+        "nickname": "cool_panda_42",
         "email": "test@example.com",
         "last_login_at": datetime.now(),
         "created_at": datetime.now(),
