@@ -60,7 +60,7 @@ Password: `password`
 `docker compose exec fastapi pytest tests/test_pass_val.py`
 
 ###  Keep in mind that the user data in the DB will be dropped. To ensure you can use the application again without running into Internal Error on openapi, do this:
-1. Go to http://localhost:5050 and delete the `alembic_version` table
+1. Go to http://localhost:5050 and delete the `alembic_version` table in your DB server
 
 2. Run the container  
 `docker compose up --build`
