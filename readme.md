@@ -9,7 +9,7 @@
 
 ### **Added Validation for Links**
 - Make sure user links match the specified formats.  
-  See the code in [**`user_service.py`**](https://github.com/digitalburritos/hw10_event_manager/blob/main/app/services/user_schemas.py#L24-L54).
+  See the code in [**`user_schemas.py`**](https://github.com/digitalburritos/hw10_event_manager/blob/main/app/schemas/user_schemas.py#L24-L54).
 
 ---
 
