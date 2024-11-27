@@ -16,5 +16,5 @@
 ### **Nickname Validation**
 - If a nickname is provided, the system checks its availability.  
 - If no nickname is provided, a unique one is generated.  
-  See the code in [**`user_service.py`**](https://github.com/digitalburritos/hw10_event_manager/blob/main/app/services/user_service.py#L63-L70).
+  See the code in [**`user_service.py`**](https://github.com/digitalburritos/hw10_event_manager/blob/main/app/services/user_service.py#L80-L94).
 
