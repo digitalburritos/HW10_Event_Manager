@@ -10,6 +10,7 @@ pytestmark = pytest.mark.asyncio
 # Test creating a user with valid data
 async def test_create_user_with_valid_data(db_session, email_service):
     user_data = {
+        "nickname": "sleeping_fox_42",
         "email": "valid_user@example.com",
         "password": "ValidPassword123!",
     }
